@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+DOCKER_HUB_USERNAME=asonnleitner
+
+IMAGE_NAME=${IMAGE_NAME:-$(basename "$(pwd)")}
+IMAGE_VERSION=${IMAGE_TAG:-latest}
+IMAGE_TAG=${DOCKER_HUB_USERNAME}/${IMAGE_NAME}:${IMAGE_VERSION}
+
+docker buildx build \
+  --platform=linux/amd64,linux/arm64 \
+  --cache-from "${DOCKER_HUB_USERNAME}/${IMAGE_NAME}:latest" \
+  --build-arg BUILDKIT_INLINE_CACHE=1 \
+  -t "${IMAGE_TAG}" \
+  --push \
+  ./
+
+
+#RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn install --frozen-lockfile --non-interactive
